@@ -1,2 +1,16 @@
+logging.level.com.reliaquest: DEBUG
 spring.application.name: employee-api
-server.port: 8111
+server:
+  port: 8111
+
+#Exponential Backoff for Retry to not overwhelm the API when 429
+retry:
+  employee:
+    max-attempts: 3
+    delay: 1000
+    multiplier: 2.0
+
+
+employee:
+  server:
+    api: http://localhost:8112/api/v1/employee
