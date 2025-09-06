@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.reliaquest.api.model.Employee;
 import com.reliaquest.api.model.dto.EmployeeRequest;
 import com.reliaquest.api.model.dto.ServerResponse;
-import java.util.Arrays;
+import com.reliaquest.api.util.MockDataHelper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 public class EmployeeApiClientImplTest {
@@ -24,12 +25,16 @@ public class EmployeeApiClientImplTest {
     private RestTemplate restTemplate;
     private IEmployeeApiClient employeeApiClient;
 
+    private MockDataHelper mockDataHelper;
+
     private final String BASE_URL = "http://localhost:8112/api/v1/employee";
 
     @BeforeEach
     void setup() {
         restTemplate = mock(RestTemplate.class);
         employeeApiClient = new EmployeeApiClientImpl(restTemplate);
+        ReflectionTestUtils.setField(employeeApiClient, "BASE_URL", "http://localhost:8112/api/v1/employee");
+        mockDataHelper = new MockDataHelper();
     }
 
     @Test
@@ -75,7 +80,7 @@ public class EmployeeApiClientImplTest {
 
     @Test
     void testGetHighestSalaryOfEmployees() {
-        List<Employee> employees = getEmployeeMockData();
+        List<Employee> employees = mockDataHelper.getEmployeeMockData();
         ServerResponse<List<Employee>> resp = new ServerResponse<>(employees, "ok");
 
         when(restTemplate.exchange(eq(BASE_URL), eq(HttpMethod.GET), isNull(), any(ParameterizedTypeReference.class)))
@@ -87,7 +92,7 @@ public class EmployeeApiClientImplTest {
 
     @Test
     void testGetTopTenHighestEarningEmployeeNames() {
-        List<Employee> employees = getEmployeeMockData();
+        List<Employee> employees = mockDataHelper.getEmployeeMockData();
         ServerResponse<List<Employee>> response = new ServerResponse<>(employees, "ok");
 
         when(restTemplate.exchange(eq(BASE_URL), eq(HttpMethod.GET), isNull(), any(ParameterizedTypeReference.class)))
@@ -141,25 +146,5 @@ public class EmployeeApiClientImplTest {
 
         boolean deleted = employeeApiClient.deleteEmployeeById("12345");
         assertTrue(deleted);
-    }
-
-    private List<Employee> getEmployeeMockData() {
-        List<Employee> employees = Arrays.asList(
-                new Employee("1", "Employee1", 1000, 25, "Engineer", "employee1@reliaquest.com"),
-                new Employee("2", "Employee2", 2000, 25, "Engineer", "employee2@reliaquest.com"),
-                new Employee("3", "Employee3", 3000, 25, "Engineer", "employee3@reliaquest.com"),
-                new Employee("4", "Employee4", 4000, 25, "Engineer", "employee4@reliaquest.com"),
-                new Employee("5", "Employee5", 5000, 25, "Engineer", "employee5@reliaquest.com"),
-                new Employee("6", "Employee6", 6000, 25, "Engineer", "employee6@reliaquest.com"),
-                new Employee("7", "Employee7", 7000, 25, "Engineer", "employee7@reliaquest.com"),
-                new Employee("8", "Employee8", 8000, 25, "Engineer", "employee8@reliaquest.com"),
-                new Employee("9", "Employee9", 9000, 25, "Engineer", "employee9@reliaquest.com"),
-                new Employee("10", "Employee10", 10000, 25, "Engineer", "employee10@reliaquest.com"),
-                new Employee("11", "Employee11", 11000, 25, "Engineer", "employee11@reliaquest.com"),
-                new Employee("12", "Employee12", 12000, 25, "Engineer", "employee12@reliaquest.com"),
-                new Employee("13", "Employee13", 13000, 25, "Engineer", "employee13@reliaquest.com"),
-                new Employee("14", "Employee14", 14000, 25, "Engineer", "employee14@reliaquest.com"));
-
-        return employees;
     }
 }

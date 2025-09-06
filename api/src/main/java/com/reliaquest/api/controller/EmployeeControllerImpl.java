@@ -34,8 +34,9 @@ public class EmployeeControllerImpl implements IEmployeeController<Employee, Emp
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") String id) {
         Employee employee = employeeApiClient.getEmployeeById(id);
-        if (Objects.isNull(employee))
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
+        if (Objects.isNull(employee)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         return ResponseEntity.ok(employee);
     }
 

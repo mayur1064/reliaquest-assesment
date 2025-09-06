@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.retry.annotation.Backoff;
@@ -20,7 +21,9 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class EmployeeApiClientImpl implements IEmployeeApiClient {
 
-    private static final String BASE_URL = "http://localhost:8112/api/v1/employee";
+    @Value("${employee.server.api}")
+    private String BASE_URL;
+
     private final RestTemplate restTemplate;
 
     public EmployeeApiClientImpl(RestTemplate restTemplate) {

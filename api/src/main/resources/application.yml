@@ -9,3 +9,8 @@ retry:
     max-attempts: 3
     delay: 1000
     multiplier: 2.0
+
+
+employee:
+  server:
+    api: http://localhost:8112/api/v1/employee
